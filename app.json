@@ -2,14 +2,14 @@
   "expo": {
     "name": "kelly-pool",
     "slug": "kelly-pool",
-    "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo192.png",
+    "version": "1.0.0",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/logo192.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#323241"
+      "backgroundColor": "#444455"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,17 +17,17 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#444455"
+    }
+    },
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/logo192.png",
-        "backgroundColor": "#323241"
-      }
-    },
     "web": {
-      "favicon": "./assets/logo192.png"
+      "favicon": "./assets/icon.png"
     }
   }
 }

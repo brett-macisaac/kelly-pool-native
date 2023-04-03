@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 // import consts from '../../../utils/constants.js';
 import PoolBall from "./PoolBall.js";
@@ -62,20 +62,21 @@ function GridPoolBall(props)
                             lMargins[1] = false;
 
                         return (
-                            <View
-                                key = {ball.number}
+                            <TouchableOpacity
+                                key = { ball.number }
                                 style = { lStyleContainer }
-                                onStartShouldSetResponder = { () => props.clickBall(ball.number) }
+                                onPress = { () => { props.clickBall(ball.number); } }
+                                activeOpacity = { 1.0 }
                             >
                                 <PoolBall 
-                                    number = {ball.number} 
-                                    potted = {ball.in} 
-                                    selected = {ball.selected}
-                                    margins = {lMargins}
-                                    marginSize = {lMarginBall}
+                                    number = { ball.number } 
+                                    potted = { ball.in } 
+                                    selected = { ball.selected }
+                                    margins = { lMargins }
+                                    marginSize = { lMarginBall }
                                     sizeBall = { lWidthBall }
                                 />
-                            </View>
+                            </TouchableOpacity>
                         );
                     }
                 )

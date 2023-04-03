@@ -1,48 +1,60 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Dimensions } from 'react-native';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import pageHelloWorld from './pages/HelloWorld.js';
+import pagePlayerNames from './pages/PlayerNames.js';
 import pageGameParameters from './pages/GameParameters.js';
-
-import { styles as gGlobalStyles, keyProperties as gGlobalProperties } from './styles.js';
+import pageGame from './pages/Game.js';
+import pagePrevNames from './pages/PrevNames.js';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() 
 {
+    console.log("Total Screen Height: " + Dimensions.get("window").height)
+
     return ( 
-        <SafeAreaView 
-            style = { { ...styles.container } }
-        >
-                
+        <SafeAreaProvider>
             <>
                 {/* Use light text instead of dark text in the status bar to provide more contrast with a dark background. */}
                 <StatusBar style = "light" />
             </>
 
-            <NavigationContainer>
-
-                <Stack.Navigator 
-                    screenOptions = { { headerShown: false } }
+            <SafeAreaView style = { { flex: 1, backgroundColor: "#000" } }>
+                <NavigationContainer
+                    // onStateChange = { (state) => console.log('New state is', state) }
                 >
-                    <Stack.Screen
-                        name = "pageGameParameters"
-                        component = { pageGameParameters }
-                        options = { { title: '' } }
-                    />
-                    <Stack.Screen 
-                        name = "pageHelloWorld" 
-                        component = { pageHelloWorld }
-                    />
-                </Stack.Navigator>
 
-            </NavigationContainer>
+                    <Stack.Navigator 
+                        screenOptions = { { headerShown: false } }
+                        initialRouteName = "pageGameParameters"
+                    >
+                        <Stack.Screen
+                            name = "pageGameParameters"
+                            component = { pageGameParameters }
+                            options = { { title: 'Game Parameters' } }
+                        />
+                        <Stack.Screen 
+                            name = "pagePrevNames" 
+                            component = { pagePrevNames }
+                        />
+                        <Stack.Screen 
+                            name = "pagePlayerNames" 
+                            component = { pagePlayerNames }
+                        />
+                        <Stack.Screen 
+                            name = "pageGame" 
+                            component = { pageGame }
+                        />
+                    </Stack.Navigator>
 
-        </SafeAreaView>
+                </NavigationContainer>
+            </SafeAreaView>
+
+        </SafeAreaProvider>
     );
 
 }
