@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView, TextInput, Dimensions, StyleSheet, Alert } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, Alert } from 'react-native';
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { styles as gGlobalStyles, keyProperties as gGlobalProperties } from "../styles.js";
+import globalProps, { utilsGlobalStyles } from "../styles.js";
 import utils from '../utils/utils.js';
 import consts from '../utils/constants.js';
 
-import Heading from '../components/Heading.js';
-import FooterButton from '../components/FooterButton.js';
+import Header from '../components/Header.js';
+import PageContainer from '../components/PageContainer.js';
 import PrevPlayerLabel from '../components/PrevPlayerLabel.js';
 
 function PrevNames({ navigation, route }) 
@@ -16,13 +14,6 @@ function PrevNames({ navigation, route })
     const [selectedNames, setSelectedNames] = useState([]);
 
     const [prevNames, setPrevNames] = useState([]);
-
-    const lInsets = useSafeAreaInsets();
-
-    // Calculate the height of the content.
-    const lHeightScreen = Dimensions.get("screen").height;
-    const lHeightTotalInsets = lInsets.top + lInsets.bottom;
-    const lHeightContent = lHeightScreen - (lHeightTotalInsets + gGlobalProperties.heightFooter + gGlobalProperties.heightHeader);
 
     const handleChange = (aName) =>
     {
@@ -86,7 +77,7 @@ function PrevNames({ navigation, route })
             utils.RandomiseArray(selectedNames);
 
             navigation.navigate(
-                "pageGame", 
+                "game", 
                 {
                     playerNames: selectedNames,
                     numBalls: route.params.numBalls, 
@@ -97,7 +88,7 @@ function PrevNames({ navigation, route })
         else
         {
             navigation.navigate(
-                "pagePlayerNames", 
+                "playerNames", 
                 { 
                     prevPlayers: selectedNames, 
                     numPlayers: route.params.numPlayers, 
@@ -135,48 +126,35 @@ function PrevNames({ navigation, route })
     }
 
     return ( 
-        <View 
-            style = { { ...gGlobalStyles.pageContainer } }
+        <PageContainer
+            navigation = { navigation }
+            buttonNavBarText = { selectedNames.length === route.params.numPlayers ? "Start" : "Next" }
+            buttonNavBarHandler = { handlePress }
+            headerButtonLeft = { Header.buttonNames.back }
+            headerButtonRight = { Header.buttonNames.settings }
+            style = {{ justifyContent: "center" }}
         >
-            <Heading text = "Returning Players"/>
+            {
+                prevNames.map(
+                    (name, index) =>
+                    {
+                        let marginTop = (index === 0) ? 0 : utilsGlobalStyles.spacingVertN();
 
-            <ScrollView 
-                vertical = {true} 
-                showsVerticalScrollIndicator = {false}
-                style = { { height: lHeightContent, width: "100%" } } 
-                contentContainerStyle = { { ...gGlobalStyles.content } }
-            >
-                <Text style = { { width: "90%", fontSize: gGlobalProperties.fontSizeStandard } }></Text>
+                        return (
+                            <View key = { index } style = { { width: "90%", marginTop: marginTop } }>
+                                <PrevPlayerLabel 
+                                    name = { name.padEnd(lLengthLongestName, ' ') }
+                                    isSelected = { selectedNames.includes(name) }
+                                    onSelect = { () => handleChange(name) }
+                                    onRemove = { () => handleRemove(name) }
+                                />
+                            </View>
+                        );
+                    }
+                )
+            }
 
-                {
-                    prevNames.map(
-                        (name, index) =>
-                        {
-                            return (
-                                <View key = { index } style = { { width: "90%", marginTop: gGlobalProperties.spacingStandard } }>
-                                    <PrevPlayerLabel 
-                                        name = { name.padEnd(lLengthLongestName, ' ') }
-                                        isSelected = { selectedNames.includes(name) }
-                                        onSelect = { () => handleChange(name) }
-                                        onRemove = { () => handleRemove(name) }
-                                    />
-                                </View>
-                            );
-                        }
-                    )
-                }
-
-
-            </ScrollView>
-
-            <View style = { { ...gGlobalStyles.footer } }>
-                <FooterButton
-                    text = "Next"
-                    onPress = { handlePress }
-                />
-            </View>
-
-        </View>
+        </PageContainer>
     );
 }
 
@@ -188,10 +166,10 @@ const styles = StyleSheet.create(
             justifyContent: 'center',
             width: Math.floor(Dimensions.get("window").width * 0.5),
             maxWidth: 500,
-            fontSize: gGlobalProperties.fontSizeStandard,
+            fontSize: globalProps.fontSizeStandard,
             textAlign: 'center',
             backgroundColor: "#000",
-            borderRadius: gGlobalProperties.borderRadiusStandard,
+            borderRadius: globalProps.borderRadiusStandard,
             padding: 5,
             color: "#FFF"
         }

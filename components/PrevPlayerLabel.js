@@ -1,23 +1,27 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import { useContext } from "react";
 
-// import gColoursBalls from '../utils/colours_pool_balls.js';
-import { keyProperties as gGlobalProperties } from "../styles.js";
-// import utils from '../utils/utils.js';
-
+import globalProps from "../styles.js";
 import CheckBox from './CheckBox.js';
+import ThemeContext from "../contexts/ThemeContext.js";
+import TextStandard from './TextStandard.js';
 
 function PrevPlayerLabel({ name, isSelected, onSelect, onRemove })
 {   
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
+
     return (
         <View 
-            style = { styles.conOuter }
+            style = {{ ...styles.conOuter, backgroundColor: theme.header }}
             activeOpacity = { 1.0 }
         >
-            <CheckBox text = { name } isChecked = { isSelected } onPress = { onSelect } />
+            <CheckBox text = { name } isChecked = { isSelected } onPress = { onSelect } monospaceFont />
 
             <TouchableOpacity style = { styles.btnRemove } onPress = { onRemove } activeOpacity = { 1.0 }>
-                <Text style = { styles.textBtnRemove }>—</Text>
+                <TextStandard text = "—" size = { 2 } isBold style = {{ color: "#ffffff" }} />
             </TouchableOpacity>
 
         </View>
@@ -31,22 +35,14 @@ const styles = StyleSheet.create(
             flexDirection: "row",
             alignItems: "stretch",
             justifyContent: "space-between",
-            // width: "100%",
-            // marginBottom: 30,
-            backgroundColor: "#000",
-            borderRadius: gGlobalProperties.fontSizeStandard * 0.5,
+            borderRadius: globalProps.fontSizeStandard * 0.5,
             overflow: "hidden"
         },
 
         conName:
         {
             alignSelf: "center", // Overrides 'alignItems' property of parent.
-            marginLeft: gGlobalProperties.fontSizeStandard,
-        },
-        textConName:
-        {
-            fontSize: gGlobalProperties.fontSizeStandard,
-            color: "#FFF",
+            marginLeft: globalProps.fontSizeStandard,
         },
 
         btnRemove:
@@ -54,14 +50,8 @@ const styles = StyleSheet.create(
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#b30202",
-            width: 3 * gGlobalProperties.fontSizeStandard,
-            paddingVertical: 0.35 * gGlobalProperties.fontSizeStandard,
-        },
-        textBtnRemove:
-        {
-            fontSize: 2 * gGlobalProperties.fontSizeStandard,
-            color: "#FFF",
-            fontWeight: 600
+            width: 3 * globalProps.fontSizeStandard,
+            paddingVertical: 0.35 * globalProps.fontSizeStandard,
         }
     }
 );

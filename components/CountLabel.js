@@ -1,22 +1,32 @@
-import { StyleSheet, Text, View  } from 'react-native';
+import { StyleSheet, View  } from 'react-native';
+import { useContext } from "react";
 
-import { keyProperties as gGlobalProperties } from "../styles.js";
+import ThemeContext from "../contexts/ThemeContext.js";
+import globalProps, { utilsGlobalStyles } from "../styles.js";
+import TextStandard from './TextStandard.js';
 
-const gFontSizeText = Math.floor(gGlobalProperties.fontSizeStandard * 1.25);
-
-const gFontSizeCount = Math.floor(gGlobalProperties.fontSizeStandard * 1.4);
-
-function CountLabel({ text, count })
+function CountLabel({ text, count, size })
 {
-    return (
-        <View style = { styles.conOuter }>
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
 
-            <View style = { styles.conText }>
-                <Text style = { styles.textConText  }>{ text }</Text>
+    return (
+        <View style = {{ 
+                ...styles.conOuter,  backgroundColor: theme.header
+            }}
+        >
+
+            <View style = {{ marginLeft: utilsGlobalStyles.fontSizeN(size) }}>
+                <TextStandard text = { text } size = { size } isBold />
             </View>
 
-            <View style = { styles.conCount }>
-                <Text style = { styles.textConCount  }>{ count }</Text>
+            <View style = {{ 
+                    ...styles.conCount, width: 3 * utilsGlobalStyles.fontSizeN(size), backgroundColor: theme.header, 
+                    borderLeftWidth: 1, borderColor: theme.borders
+                }}
+            >
+                <TextStandard text = { count } size = { size } isBold />
             </View>
 
         </View>
@@ -31,35 +41,15 @@ const styles = StyleSheet.create(
             alignItems: "center",
             justifyContent: "space-between",
             width: "100%",
-            marginBottom: Math.floor(gGlobalProperties.spacingStandard * 0.75),
-            backgroundColor: "#000",
-        },
-
-        conText:
-        {
-            marginLeft: gFontSizeText,
-        },
-        textConText:
-        {
-            fontSize: gFontSizeText,
-            color: "#FFF",
-            fontWeight: 600
+            marginBottom: Math.floor(utilsGlobalStyles.spacingVertN(-1)),
         },
 
         conCount:
         {
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "#FFF",
-            width: gFontSizeCount * 3,
-            paddingVertical: gFontSizeCount * 0.35
+            paddingVertical: 0.35 * utilsGlobalStyles.fontSizeN(1)
         },
-        textConCount:
-        {
-            fontSize: gFontSizeCount,
-            color: "#000",
-            fontWeight: 600
-        }
 
     }
 );

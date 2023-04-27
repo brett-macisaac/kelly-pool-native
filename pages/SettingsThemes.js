@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+
+import globalProps, { utilsGlobalStyles } from '../styles';
+import { useContext } from "react";
+
+import ThemeContext from "../contexts/ThemeContext.js";
+import TextStandard from '../components/TextStandard.js';
+import PageContainer from '../components/PageContainer.js';
+import Header from '../components/Header.js';
+import ButtonTheme from '../components/ButtonTheme';
+
+function SettingsThemes({ navigation }) 
+{
+    // The name of the current theme and the function that handles updating it.
+    const { themeName, updateTheme } = useContext(ThemeContext);
+
+    return ( 
+        <PageContainer
+            navigation = { navigation }
+            headerButtonLeft = { Header.buttonNames.back }
+            style = {{ paddingHorizontal: 15 }}
+        >
+
+            <TextStandard 
+                text = "Select a theme from below." 
+                isBold
+                style = {{ 
+                    textAlign: "center", marginBottom: globalProps.spacingVertBase 
+                }}
+            />
+
+            <View
+                style = { styles.conButtons }
+            >
+                {
+                    Object.keys(globalProps.themes).map(
+                        (themeNameI, index) =>
+                        {
+
+                            return (
+                                <View key = { index } style = {{ ...styles.conButton, borderRadius: 10 }}>
+                                    <ButtonTheme 
+                                        themeName = { themeNameI } 
+                                        height = { 140 } 
+                                        width = { 75 } 
+                                        isSelected = { themeNameI === themeName }
+                                        onPress = { () => updateTheme(themeNameI) }
+                                    />
+                                    <TextStandard text = { globalProps.themes[themeNameI].name } isBold />
+                                </View>
+                            )
+                        }
+                    )
+                }
+            </View>
+
+        </PageContainer>
+    );
+}
+
+const styles = StyleSheet.create(
+    {
+        conButton:
+        {
+            alignItems: "center",
+            // justifyContent: "center"
+        },
+        conButtons:
+        {
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            alignSelf: "center",
+            justifyContent: "center",
+            columnGap: utilsGlobalStyles.spacingVertN(1),
+            rowGap: globalProps.spacingVertBase,
+        }
+    }
+);
+
+export default SettingsThemes;

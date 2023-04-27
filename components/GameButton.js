@@ -1,18 +1,19 @@
 import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { keyProperties as gGlobalProperties } from "../styles.js";
+import globalProps from "../styles.js";
 
-import CustomButton from './CustomButton.js';
+import ButtonStandard from './ButtonStandard.js';
 
 function GameButton({ text, onPress })
 {
     return (
-        <CustomButton 
+        <ButtonStandard 
             text = { text }
+            isBold
+            sizeText = { 1 }
             onPress = { onPress }
             style = { styles.btnGame }
-            styleText = { styles.textBtnGame }
         />
     );
 }
@@ -25,16 +26,9 @@ const styles = StyleSheet.create(
             maxWidth: 500,
             alignItems: "center",
             padding: 10,
-            backgroundColor: "#000",
-            borderRadius: gGlobalProperties.borderRadiusStandard,
-            // marginBottom: gGlobalProperties.spacingStandard
+            // backgroundColor: "#000",
+            borderRadius: globalProps.borderRadiusStandard,
         },
-        textBtnGame: 
-        {
-            fontSize: Math.floor(gGlobalProperties.fontSizeStandard * 1.25),
-            fontWeight: 600,
-            color: "#FFF",
-        }
     }
 );
 

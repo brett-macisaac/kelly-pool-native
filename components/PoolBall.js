@@ -1,9 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
+import { useContext } from 'react';
 
+import globalProps from "../styles.js";
+
+import ThemeContext from "../contexts/ThemeContext.js";
 import gColoursBalls from '../utils/colours_pool_balls.js';
-import { keyProperties as gGlobalProperties } from "../styles.js";
 
 
 const gColourTertiary = "#ffffff";
@@ -13,12 +15,16 @@ const gColourFontSelected = "#ffffff";
 
 function PoolBall(props)
 {
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
+
     let lColourPrimary = props.potted ? gColoursBalls[0].primary : gColoursBalls[props.number].primary;
     let lColourSecondary = props.potted ? gColoursBalls[0].secondary : gColoursBalls[props.number].secondary;
     let lColorTertiary = props.potted ? gColourTertiaryPotted : gColourTertiary;
 
     if (props.selected)
-        lColorTertiary = gGlobalProperties.colourSelected;
+        lColorTertiary = theme.selected;
     
     const lColourFont = props.selected ? gColourFontSelected : gColourFont;
 

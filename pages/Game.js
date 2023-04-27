@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView,Dimensions, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { styles as gGlobalStyles, keyProperties as gGlobalProperties } from "../styles.js";
+import ThemeContext from "../contexts/ThemeContext.js";
+import globalProps, { styles as globalStyles, utilsGlobalStyles } from "../styles.js";
 import consts from '../utils/constants.js';
 import utils from '../utils/utils.js';
 
-import Heading from '../components/Heading.js';
+import PageContainer from '../components/PageContainer.js';
 import CountLabel from '../components/CountLabel.js';
 import PlayerLabel from '../components/PlayerLabel.js';
 import GridPoolBall from '../components/GridPoolBall.js';
 import GameButton from '../components/GameButton.js';
+import Header from '../components/Header.js';
+import Container from '../components/Container.js';
 
 function Game({ navigation, route }) 
 {
-    const lInsets = useSafeAreaInsets();
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
 
     const [players, setPlayers] = useState(
         
@@ -516,7 +519,7 @@ function Game({ navigation, route })
 
     const handleQuit = () =>
     {
-        navigation.navigate("pageGameParameters");
+        navigation.navigate("gameParameters");
     }
 
     const lNumPlayersIn = NumPlayersIn();
@@ -534,115 +537,101 @@ function Game({ navigation, route })
         }
     }
 
-    // Calculate the height of the content.
-    const lHeightScreen = Dimensions.get("screen").height;
-    const lWidthScreen = Dimensions.get("screen").width;
-    const lHeightTotalInsets = lInsets.top + lInsets.bottom;
-    const lHeightContent = lHeightScreen - (lHeightTotalInsets + gGlobalProperties.heightHeader);
-
     return ( 
-        <View style = { { ...gGlobalStyles.pageContainer } }>
+        <PageContainer
+            navigation = { navigation }
+            headerButtonRight = { Header.buttonNames.settings }
+            headerButtonLeft = { Header.buttonNames.menu }
+        >
+            <Container>
 
-            <Heading text = "Game"/>
+                <CountLabel text = "Players" count = { lNumPlayersIn } size = { 1 } />
 
-            <ScrollView 
-                vertical = {true} 
-                style = { { height: lHeightContent, width: "100%" } } 
-                contentContainerStyle = { { ...gGlobalStyles.content } }
-                showsVerticalScrollIndicator = {false}
-            >
-
-                <View style = { { ...gGlobalStyles.conGeneral, marginTop: gGlobalProperties.spacingStandard  } }>
-
-                    <CountLabel text = "Players" count = { lNumPlayersIn } />
-
-                    {
-                        players.map(
-                            (player, index) => 
-                            {
-                                let lNumBalls = player.balls.filter(el => !el.in).length;
-
-                                lCountPlayersBalls += lNumBalls;
-
-                                const lStyleCon = { };
-
-                                if (index !== players.length - 1)
-                                    lStyleCon.marginBottom = gGlobalProperties.spacingStandard;
-
-                                return (
-                                    <View style = { lStyleCon } key = { index }>
-                                        <PlayerLabel 
-                                            name = { player.name.padEnd(lLengthLongestName) }
-                                            ballCount = { lNumBalls }
-                                            isSelected = { index === indexSelected }
-                                            showCount = { route.params.showCounts } // !!! Change this later once the 'hide count' feature is implemented.
-                                            onClick = { () => highlightPlayersBalls(index) }
-                                            place = { player.nthPlace }
-                                        />
-                                    </View>
-                                );
-                            }
-                        )
-                    }
-
-                    {
-                        (route.params.showCounts && lNumPlayersIn > 1) && (
-                            <View>
-                                <View style = { { backgroundColor: "#ccc", height: 5, marginVertical: gGlobalProperties.spacingStandard } } ></View>
-                                <PlayerLabel name = "Total" ballCount = { lCountPlayersBalls } emboldenName = { true } />
-                            </View>
-                        )
-                    }
-
-                </View>
-                
-                {/* Replay and Quit buttons. */}
                 {
-                    lNumPlayersIn <= 1 && (
-                        <View style = { { ...gGlobalStyles.conGeneral, marginTop: 1.5 * gGlobalProperties.spacingStandard } }>
+                    players.map(
+                        (player, index) => 
+                        {
+                            let lNumBalls = player.balls.filter(el => !el.in).length;
 
-                            <View style = { { width: "100%", marginBottom: gGlobalProperties.spacingStandard } }>
-                                <GameButton text = "Replay" onPress = { handleReplay } />
-                            </View>
+                            lCountPlayersBalls += lNumBalls;
 
-                            <GameButton text = "Return to Menu" onPress = { handleQuit } />
+                            const lStyleCon = { };
 
+                            if (index !== players.length - 1)
+                                lStyleCon.marginBottom = globalProps.spacingStandard;
+
+                            return (
+                                <View style = { lStyleCon } key = { index }>
+                                    <PlayerLabel 
+                                        name = { player.name.padEnd(lLengthLongestName) }
+                                        ballCount = { lNumBalls }
+                                        isSelected = { index === indexSelected }
+                                        showCount = { route.params.showCounts } // !!! Change this later once the 'hide count' feature is implemented.
+                                        onClick = { () => highlightPlayersBalls(index) }
+                                        place = { player.nthPlace }
+                                    />
+                                </View>
+                            );
+                        }
+                    )
+                }
+
+                {
+                    (route.params.showCounts && lNumPlayersIn > 1) && (
+                        <View>
+                            <View style = { { backgroundColor: theme.borders, height: 5, marginVertical: globalProps.spacingStandard } } ></View>
+                            <PlayerLabel name = "Total" ballCount = { lCountPlayersBalls } emboldenName = { true } />
                         </View>
                     )
                 }
 
-                <View style = { { ...gGlobalStyles.conGeneral, marginTop: 1.5 * gGlobalProperties.spacingStandard, alignItems: "center" } } >
+            </Container>
+            
+            {/* Replay and Quit buttons. */}
+            {
+                lNumPlayersIn <= 1 && (
+                    <Container style = { { marginTop: utilsGlobalStyles.spacingVertN(1) } }>
 
-                    <CountLabel text = "Balls" count = { balls.filter((ball) => !ball.in).length } />
+                        <View style = { { width: "100%", marginBottom: utilsGlobalStyles.spacingVertN(0) } }>
+                            <GameButton text = "Replay" onPress = { handleReplay } />
+                        </View>
 
-                    <GridPoolBall 
-                        columns = { 3 }
-                        clickBall = { clickBall }
-                        balls = { balls }
-                        width = { gGlobalProperties.widthGridPoolBall }
-                    />
+                        <GameButton text = "Return to Menu" onPress = { handleQuit } />
 
-                    {
-                        (indexSelected >= 0 && (availableBalls()).length > 0) && (
-                            <View style = { { width: "100%", marginTop: gGlobalProperties.spacingStandard } }>
-                                <GameButton text = "Add Ball" onPress = { handleAddBall } />
-                            </View>
-                        )
-                    }
+                    </Container>
+                )
+            }
 
-                    {
-                        ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
-                            <View style = { { width: "100%", marginTop: gGlobalProperties.spacingStandard } }>
-                                <GameButton text = "Remove Ball" onPress = { handleRemoveBall } />
-                            </View>
-                        )
-                    }
+            <Container style = { {  marginTop: utilsGlobalStyles.spacingVertN(1), alignItems: "center" } } >
 
-                </View>
+                <CountLabel text = "Balls" count = { balls.filter((ball) => !ball.in).length } size = { 1 } />
 
-            </ScrollView>
+                <GridPoolBall 
+                    columns = { 3 }
+                    clickBall = { clickBall }
+                    balls = { balls }
+                    width = { globalProps.widthGridPoolBall }
+                />
 
-        </View>
+                {
+                    (indexSelected >= 0 && (availableBalls()).length > 0) && (
+                        <View style = { { width: "100%", marginTop: utilsGlobalStyles.spacingVertN() } }>
+                            <GameButton text = "Add Ball" onPress = { handleAddBall } />
+                        </View>
+                    )
+                }
+
+                {
+                    ((indexSelected >= 0) && players[indexSelected].balls.filter(ball => !ball.in).length > 0) && (
+                        <View style = { { width: "100%", marginTop: utilsGlobalStyles.spacingVertN() } }>
+                            <GameButton text = "Remove Ball" onPress = { handleRemoveBall } />
+                        </View>
+                    )
+                }
+
+            </Container>
+
+        </PageContainer>
     );
 }
 

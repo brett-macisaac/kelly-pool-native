@@ -1,14 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import { useContext } from "react";
 
+import ThemeContext from "../contexts/ThemeContext.js";
+import TextStandard from './TextStandard.js';
 import gColoursBalls from '../utils/colours_pool_balls.js';
-import { keyProperties as gGlobalProperties } from "../styles.js";
+import globalProps, { utilsGlobalStyles } from "../styles.js";
 import utils from '../utils/utils.js';
 
-const gFontSize = Math.floor(gGlobalProperties.fontSizeStandard * 1.25);
+const fontSize = Math.floor(utilsGlobalStyles.fontSizeN(1));
 
 function PlayerLabel({ name, ballCount, place, isSelected, showCount, onClick, emboldenName })
 {
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
+
     const lStyleBallCount = { backgroundColor: gColoursBalls[ballCount].primary };
 
     if (!showCount)
@@ -16,29 +23,30 @@ function PlayerLabel({ name, ballCount, place, isSelected, showCount, onClick, e
    
     return (
         <TouchableOpacity 
-            style = { isSelected ? { ...styles.conOuter, ...styles.conOuterSelected } : styles.conOuter }
+            style = { 
+                isSelected ? { ...styles.conOuter, backgroundColor: theme.selected } : 
+                             { ...styles.conOuter, backgroundColor: theme.header } 
+            }
             onPress = { onClick }
             activeOpacity = { 1.0 }
         >
             {
                 place > 0 && (
-                    <View style = { { ...styles.conCount, ...styles.conPlace, backgroundColor: gColoursBalls[place].primary } }>
-                        <View style = { { ...styles.conCircle, ...styles.conCirclePlace } }>
-                            <Text style = { { ...styles.textConCircle, ...styles.textConCirclePlace }  }>
-                                { place }{ utils.OrdinalSuffix(place) }
-                            </Text>
+                    <View style = { { ...styles.conCount, backgroundColor: gColoursBalls[place].primary } }>
+                        <View style = { { ...styles.conCircle } }>
+                            <TextStandard text = { `${place}${utils.OrdinalSuffix(place)}` } size = { -1 } isBold style = {{ color: "#000" }} />
                         </View>
                     </View>
                 )
             }
 
-            <View style = { styles.conName }>
-                <Text style = { { ...styles.textConName, fontWeight: emboldenName ? 600 : "normal" }  }>{ name }</Text>
+            <View style = { { ...styles.conName, marginLeft: place > 0 ? 0 : fontSize } }>
+                <TextStandard text = { name } isBold = { emboldenName } size = { 1 } />
             </View>
 
-            <View style = { { ...styles.conCount, ...lStyleBallCount } }>
+            <View style = {{ ...styles.conCount, ...lStyleBallCount }}>
                 <View style = { styles.conCircle }>
-                    <Text style = { styles.textConCircle  }>{ ballCount }</Text>
+                    <TextStandard text = { ballCount } size = { 1 } isBold style = {{ color: "#000" }} />
                 </View>
             </View>
 
@@ -54,66 +62,42 @@ const styles = StyleSheet.create(
             flexDirection: "row",
             alignItems: "stretch",
             justifyContent: "space-between",
-            // width: "100%",
-            // marginBottom: 30,
-            backgroundColor: "#000",
-            borderRadius: gFontSize * 0.5,
+            borderRadius: fontSize * 0.5,
             overflow: "hidden"
-        },
-        conOuterSelected:
-        {
-            backgroundColor: gGlobalProperties.colourSelected
         },
 
         conName:
         {
             alignSelf: "center", // Overrides 'alignItems' property of parent.
-            marginLeft: gFontSize,
-        },
-        textConName:
-        {
-            fontFamily: gGlobalProperties.fontFamilyMono,
-            fontSize: gFontSize,
-            color: "#FFF",
+            marginLeft: fontSize,
         },
 
         conCount:
         {
             alignItems: "center",
             justifyContent: "center",
-            // backgroundColor: "#FFF",
-            width: 3 * gFontSize,
-            paddingVertical: 0.35 * gFontSize,
+            width: 3 * fontSize,
+            paddingVertical: 0.35 * fontSize,
         },
         conCircle:
         {
             alignItems: "center",
             justifyContent: "center",
-            width: 1.75 * gFontSize,
-            height: 1.75 * gFontSize,
-            borderRadius: (1.75 * gFontSize) / 2,
+            width: 1.75 * fontSize,
+            height: 1.75 * fontSize,
+            borderRadius: (1.75 * fontSize) / 2,
             backgroundColor: "#FFF"
-        },
-        textConCircle:
-        {
-            fontSize: gFontSize,
-            color: "#000",
-            fontWeight: 600
         },
 
         conPlace:
         {
-            width: 3.25 * gFontSize
+            width: 3.25 * fontSize
         },
         conCirclePlace:
         {
-            width: 2.3 * gFontSize,
-            height: 2.3 * gFontSize,
-            borderRadius: (2.3 * gFontSize) / 2
-        },
-        textConCirclePlace:
-        {
-            fontSize: 0.8 * gFontSize
+            width: 2.3 * fontSize,
+            height: 2.3 * fontSize,
+            borderRadius: (2.3 * fontSize) / 2
         }
 
     }

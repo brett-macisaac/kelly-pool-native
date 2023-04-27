@@ -1,21 +1,54 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import PropTypes from 'prop-types';
+import { useContext } from "react";
 
-import { keyProperties as gGlobalProperties } from "../styles.js";
+import TextStandard from './TextStandard.js';
+import ThemeContext from "../contexts/ThemeContext.js";
+import globalProps from "../styles.js";
 
-function CheckBox({ text, isChecked, onPress })
+function CheckBox({ text, isChecked, onPress, monospaceFont, style })
 {
+    // Acquire global theme.
+    const { themeName } = useContext(ThemeContext);
+    let theme = globalProps.themes[themeName];
+
     return (
-        <TouchableOpacity style = { styles.conOuter } onPress = { onPress } activeOpacity = { 1.0 }>
+        <TouchableOpacity style = {{ ...styles.conOuter, ...style, backgroundColor: theme.header }} onPress = { onPress } activeOpacity = { 1.0 }>
 
             <View style = { styles.conText }>
-                <Text style = { styles.textConText }>{ text }</Text>
+                <TextStandard text = { text } isBold = { true } isMonospace = { monospaceFont } />
             </View>
 
-            <View style = { { ...styles.check, backgroundColor: isChecked ? gGlobalProperties.colourSelected : "#FFF" } }>
+            <View style = { { ...styles.check, backgroundColor: isChecked ? theme.selected : theme.font } }>
+                {
+                    isChecked && (
+                        <MaterialCommunityIcons 
+                            name = "check" 
+                            color = "#ffffff"//{ theme.font }
+                            size = { 2 * globalProps.fontSizeBase } 
+                        />
+                    )
+                }
             </View>
 
         </TouchableOpacity>
     );
+}
+
+CheckBox.propTypes =
+{
+    text: PropTypes.string.isRequired,
+    isChecked: PropTypes.bool.isRequired,
+    onPress: PropTypes.func,
+    monospaceFont: PropTypes.bool,
+    style: PropTypes.object
+};
+
+CheckBox.defaultProps =
+{
+    monospaceFont: false,
+    style: {}
 }
 
 const styles = StyleSheet.create(
@@ -24,37 +57,25 @@ const styles = StyleSheet.create(
         {
             flexDirection: "row",
             alignItems: "center",
-            backgroundColor: "#000",
-            paddingVertical: 0.4 * gGlobalProperties.fontSizeStandard,
-            paddingHorizontal: 0.75 * gGlobalProperties.fontSizeStandard
+            justifyContent: "space-between",
+            // backgroundColor: "#000",
+            paddingVertical: 0.4 * globalProps.fontSizeBase,
+            paddingHorizontal: 0.75 * globalProps.fontSizeBase,
+            borderRadius: globalProps.borderRadiusStandard
         },
 
         conText:
         {
-            marginRight: 1 * gGlobalProperties.fontSizeStandard,
-        },
-        textConText:
-        {
-            fontFamily: gGlobalProperties.fontFamilyMono,
-            fontSize: gGlobalProperties.fontSizeStandard,
-            color: "#FFF",
-            fontWeight: 600
+            marginRight: globalProps.fontSizeBase,
         },
 
-        conCheck:
-        {
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#000",
-            width: 3 * gGlobalProperties.fontSizeStandard,
-            height: 3 * gGlobalProperties.fontSizeStandard,
-            borderRadius: (3 * gGlobalProperties.fontSizeStandard) / 2
-        },
         check:
         {
-            width: 2.3 * gGlobalProperties.fontSizeStandard,
-            height: 2.3 * gGlobalProperties.fontSizeStandard,
-            borderRadius: (2.3 * gGlobalProperties.fontSizeStandard) / 2
+            width: 2.3 * globalProps.fontSizeBase,
+            height: 2.3 * globalProps.fontSizeBase,
+            borderRadius: (2.3 * globalProps.fontSizeBase) / 2,
+            alignItems: "center",
+            justifyContent: "center"
         }
 
     }

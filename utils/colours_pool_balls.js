@@ -2,7 +2,7 @@ const lColoursBalls =
 [
     { primary: "#101010", secondary: "#101010" }, // Colours for when the ball has been potted.
 
-    { primary: "#e2e202", secondary: "#e2e202" }, // 1; solid; yellow.
+    { primary: "#CACA06", secondary: "#CACA06" }, // 1; solid; yellow.
     { primary: "#0000ff", secondary: "#0000ff" }, // 2; solid; light blue.
     { primary: "#dd1111", secondary: "#dd1111" }, // 3; solid; light red.
     { primary: "#6d056d", secondary: "#6d056d" }, // 4; solid; purple.
@@ -12,7 +12,7 @@ const lColoursBalls =
 
     { primary: "#000000", secondary: "#000000" }, // 8; solid; black.
 
-    { primary: "#e2e201", secondary: "#ffffff" }, // 9; stripes; yellow.
+    { primary: "#CACA06", secondary: "#ffffff" }, // 9; stripes; yellow.
     { primary: "#0000ff", secondary: "#ffffff" }, // 10; stripes; light blue.
     { primary: "#dd1111", secondary: "#ffffff" }, // 11; stripes; light red.
     { primary: "#6d056d", secondary: "#ffffff" }, // 12; stripes; purple.

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Text, View, ScrollView, TextInput, Dimensions, StyleSheet, Alert } from 'react-native';
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import globalProps, { utilsGlobalStyles } from "../styles.js";
 
-import { styles as gGlobalStyles, keyProperties as gGlobalProperties } from "../styles.js";
-
-import Heading from '../components/Heading.js';
-import FooterButton from '../components/FooterButton.js';
+import TextInputStandard from "../components/TextInputStandard";
+import TextStandard from '../components/TextStandard.js';
+import PageContainer from '../components/PageContainer.js';
+import Header from '../components/Header.js';
 import utils from '../utils/utils.js';
 import consts from '../utils/constants.js';
 
@@ -21,13 +21,6 @@ function PlayerNames({ navigation, route })
                 Array(route.params.numPlayers).fill("")
 
     );
-
-    const lInsets = useSafeAreaInsets();
-
-    // Calculate the height of the content.
-    const lHeightScreen = Dimensions.get("screen").height;
-    const lHeightTotalInsets = lInsets.top + lInsets.bottom;
-    const lHeightContent = lHeightScreen - (lHeightTotalInsets + gGlobalProperties.heightFooter + gGlobalProperties.heightHeader);
 
     const handleTextInput = (aNewText, aIndex) =>
     {
@@ -92,7 +85,7 @@ function PlayerNames({ navigation, route })
         utils.RandomiseArray(names);
 
         navigation.navigate(
-            "pageGame", 
+            "game", 
             { 
                 numPlayers: route.params.numPlayers, 
                 numBalls: route.params.numBalls,
@@ -103,67 +96,62 @@ function PlayerNames({ navigation, route })
     }
 
     return ( 
-        <View 
-            style = { { ...gGlobalStyles.pageContainer } }
+        <PageContainer
+            navigation = { navigation }
+            buttonNavBarText = "Start"
+            buttonNavBarHandler = { handleStart }
+            headerButtonLeft = { Header.buttonNames.back }
+            headerButtonRight = { Header.buttonNames.settings }
+            style = {{ justifyContent: "center" }}
         >
-            <Heading text = "Player Names"/>
+            {
+                names.map(
+                    (name, index) =>
+                    {
+                        let marginTop = (index === 0) ? 0 : utilsGlobalStyles.spacingVertN();
 
-            <ScrollView 
-                vertical = {true} 
-                style = { { height: lHeightContent, width: "100%" } } 
-                contentContainerStyle = { { ...gGlobalStyles.content } }
-                // nestedScrollEnabled = {true}
-                showsVerticalScrollIndicator = {false}
-            >
-                {
-                    names.map(
-                        (name, index) =>
-                        {
-                            return (
-                                <View key = { index } style = { { marginTop: gGlobalProperties.spacingStandard } }>
-                                    <Text style = { gGlobalStyles.title }>Player { index + 1 }</Text>
-                                    <TextInput 
-                                        placeholder = "Name"
-                                        placeholderTextColor = "#DDD"
-                                        value = { name } 
-                                        onChangeText = { (newText) => handleTextInput(newText, index) }
-                                        maxLength = { 12 }
-                                        style = { styles.txtName }
-                                    />
-                                </View>
-                            );
-                        }
-                    )
-                }
+                        return (
+                            <View key = { index } style = {{ marginTop: marginTop }}>
+                                <TextStandard 
+                                    text = { `Player ${index + 1}` } 
+                                    size = { 1 }
+                                    isBold
+                                    style = { styles.titlePlayer }  
+                                />
+                                <TextInputStandard 
+                                    placeholder = "Name"
+                                    text = { name } 
+                                    onChangeText = { (newText) => handleTextInput(newText, index) }
+                                    maxLength = { 12 }
+                                    style = { styles.txtName }
+                                />
+                            </View>
+                        );
+                    }
+                )
+            }
 
-
-            </ScrollView>
-
-            <View style = { { ...gGlobalStyles.footer } }>
-                <FooterButton
-                    text = "Start"
-                    onPress = { handleStart }
-                />
-            </View>
-
-        </View>
+        </PageContainer>
     );
 }
 
 const styles = StyleSheet.create(
     {
-        txtName: {
-            backgroundColor: "#000",
+        txtName: 
+        {
+            // backgroundColor: "#000",
             alignItems: 'center',
             justifyContent: 'center',
             width: Math.floor(Dimensions.get("window").width * 0.5),
             maxWidth: 500,
-            fontSize: gGlobalProperties.fontSizeStandard,
             textAlign: 'center',
-            backgroundColor: "#000",
-            borderRadius: gGlobalProperties.borderRadiusStandard,
             padding: 5,
-            color: "#FFF"
+            // color: "#FFF"
+        },
+        titlePlayer: 
+        {
+            textAlign: "center",
+            marginBottom: utilsGlobalStyles.spacingVertN(-2)
         }
     }
 );

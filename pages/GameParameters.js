@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Dimensions, Alert } from 'react-native';
+import { View, ScrollView, Alert, StyleSheet } from 'react-native';
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { styles as gGlobalStyles, keyProperties as gGlobalProperties } from "../styles.js";
+import globalProps, { styles as globalStyles, utilsGlobalStyles } from "../styles.js";
 import consts from '../utils/constants.js';
 import utils from '../utils/utils.js';
 
 import GridPoolBall from '../components/GridPoolBall.js';
 import CountLabel from '../components/CountLabel.js';
-import FooterButton from '../components/FooterButton.js';
-import Heading from '../components/Heading.js';
 import CheckBox from '../components/CheckBox.js';
+import PageContainer from '../components/PageContainer.js';
+import Header from '../components/Header.js';
+import Container from '../components/Container.js';
 
 function GameParameters({ navigation }) 
 {
@@ -20,8 +19,6 @@ function GameParameters({ navigation })
     const [numBalls, setNumBalls] = useState(0);
 
     const [showCounts, setShowCounts] = useState(true);
-
-    const lInsets = useSafeAreaInsets();
 
     const selectNumPlayers = (aNum) =>
     {
@@ -62,12 +59,12 @@ function GameParameters({ navigation })
         if (lGoToPrevNamesPages)
         {
             console.log("Go to prev players page!");
-            navigation.navigate("pagePrevNames", { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts });
+            navigation.navigate("prevNames", { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts });
         }
         else
         {
             console.log("Go to players page!");
-            navigation.navigate("pagePlayerNames", { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts });
+            navigation.navigate("playerNames", { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts });
         }
     };
 
@@ -92,80 +89,69 @@ function GameParameters({ navigation })
         [numPlayers]
     );
 
-    // Calculate the height of the content.
-    const lHeightScreen = Dimensions.get("screen").height;
-    const lWidthScreen = Dimensions.get("screen").width;
-    const lHeightTotalInsets = lInsets.top + lInsets.bottom;
-    const lHeightContent = lHeightScreen - (lHeightTotalInsets + gGlobalProperties.heightFooter + gGlobalProperties.heightHeader);
-    // console.log("Total Insets: " + lHeightTotalInsets);
-
     return ( 
-        <View style = { { ...gGlobalStyles.pageContainer } }>
+        <PageContainer
+            navigation = { navigation }
+            buttonNavBarText = "Next"
+            buttonNavBarHandler = { handleNext }
+            headerButtonLeft = { Header.buttonNames.back }
+            headerButtonRight = { Header.buttonNames.settings }
+        >
 
-            <Heading text = "Game Parameters"/>
-            {/* <View style = { { ...gGlobalStyles.header } }>
-                <Text style = { { ...gGlobalStyles.headerText } }>Game Parameters</Text>
-            </View> */}
+            <Container style = {{ ...styles.containerBalls }}>
+                <CountLabel text = "Number of Players" count = { numPlayers } size = { 1 } />
+                <GridPoolBall 
+                    columns = { 4 }
+                    clickBall = { selectNumPlayers }
+                    balls = { 
+                        Array.from({ length: 14 }, (el, index) => index + 2).map(
+                            (aNum) =>
+                            {
+                                return { number: aNum, in: false, selected: aNum === numPlayers };
+                            }
+                        ) 
+                    }
+                    width = { globalProps.widthGridPoolBall }
+                />
+            </Container>
 
-            <ScrollView 
-                vertical = {true}
-                showsVerticalScrollIndicator = {false}
-                style = { { height: lHeightContent, width: "100%" } } 
-                contentContainerStyle = { { ...gGlobalStyles.content } }
-            >
+            <Container style = {{ ...styles.containerBalls, marginTop: utilsGlobalStyles.spacingVertN(1) }}>
+                <CountLabel text = "Number of Balls" count = { numBalls } size = { 1 } />
+                <GridPoolBall 
+                    columns = { 4 }
+                    clickBall = { selectNumBalls }
+                    balls = { 
+                        Array.from({ length: maxNumBalls() }, (el, index) => index + 1).map(
+                            (aNum) =>
+                            {
+                                return { number: aNum, in: false, selected: aNum === numBalls };
+                            }
+                        ) 
+                    }
+                    width = { globalProps.widthGridPoolBall }
+                />
+            </Container>
 
-                <View style = { { ...gGlobalStyles.conGeneral, marginTop:gGlobalProperties.spacingStandard, alignItems: "center" } }>
-                    {/* <Text style = { gGlobalStyles.title }>Number of Players</Text> */}
-                    <CountLabel text = "Number of Players" count = { numPlayers } />
-                    <GridPoolBall 
-                        columns = { 4 }
-                        clickBall = { selectNumPlayers }
-                        balls = { 
-                            Array.from({ length: 14 }, (el, index) => index + 2).map(
-                                (aNum) =>
-                                {
-                                    return { number: aNum, in: false, selected: aNum === numPlayers };
-                                }
-                            ) 
-                        }
-                        width = { gGlobalProperties.widthGridPoolBall }
-                    />
-                </View>
-
-                <View style = { { ...gGlobalStyles.conGeneral, marginTop: gGlobalProperties.spacingStandard, alignItems: "center" } }>
-                    {/* <Text style = { gGlobalStyles.title }>Balls Per Player</Text> */}
-                    <CountLabel text = "Number of Balls" count = { numBalls } />
-                    <GridPoolBall 
-                        columns = { 4 }
-                        clickBall = { selectNumBalls }
-                        balls = { 
-                            Array.from({ length: maxNumBalls() }, (el, index) => index + 1).map(
-                                (aNum) =>
-                                {
-                                    return { number: aNum, in: false, selected: aNum === numBalls };
-                                }
-                            ) 
-                        }
-                        width = { gGlobalProperties.widthGridPoolBall }
-                    />
-                </View>
-
-                <View style = { { marginTop: gGlobalProperties.spacingStandard } }>
-                    <CheckBox text = "Show Players' Ball Counts:" isChecked = { showCounts } onPress = { toggleShowCounts } />
-                </View>
-                
-
-            </ScrollView>
-
-            <View style = { { ...gGlobalStyles.footer } }>
-                <FooterButton
-                    text = "Next"
-                    onPress = { handleNext }
+            <View style = { { marginTop: utilsGlobalStyles.spacingVertN(1) } }>
+                <CheckBox 
+                    text = "Show Players' Ball Counts:" 
+                    isChecked = { showCounts } 
+                    onPress = { toggleShowCounts } 
+                    // style = {{ width: globalStyles.conGeneral.width }} 
                 />
             </View>
 
-        </View>
+        </PageContainer>
     );
 }
+
+const styles = StyleSheet.create(
+    {
+        containerBalls: 
+        {
+            alignItems: "center"
+        },
+    }
+);
 
 export default GameParameters;
