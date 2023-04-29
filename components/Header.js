@@ -15,7 +15,7 @@ import buttonsHeader from "./buttons_header";
     > nameBtnLeft: the name of the left button, which refers directly to a component from buttonsHeader.
     > nameBtnRight: the name of the right button, which refers directly to a component from buttonsHeader.
 */
-const Header = ({ navigation, nameBtnLeft, nameBtnRight }) => 
+const Header = ({ navigation, nameBtnLeft, nameBtnRight, setOptionsPopUpMsg }) => 
 {
     // Acquire global theme.
     const { themeName } = useContext(ThemeContext);
@@ -37,6 +37,7 @@ const Header = ({ navigation, nameBtnLeft, nameBtnRight }) =>
                     BtnLeft && (
                         <BtnLeft 
                             navigation = { navigation }
+                            setOptionsPopUpMsg = { setOptionsPopUpMsg }
                         />
                     )
                 }
@@ -57,6 +58,7 @@ const Header = ({ navigation, nameBtnLeft, nameBtnRight }) =>
                     BtnRight && (
                         <BtnRight
                             navigation = { navigation } 
+                            setOptionsPopUpMsg = { setOptionsPopUpMsg }
                         />
                     )
                 }
@@ -79,7 +81,8 @@ Header.propTypes =
 {
     navigation: PropTypes.object.isRequired,
     nameBtnLeft: PropTypes.oneOf(Object.keys(Header.buttonNames)),
-    nameBtnRight: PropTypes.oneOf(Object.keys(Header.buttonNames))
+    nameBtnRight: PropTypes.oneOf(Object.keys(Header.buttonNames)),
+    setOptionsPopUpMsg: PropTypes.func
 };
 
 Header.defaultProps =

@@ -13,7 +13,7 @@ function CountLabel({ text, count, size })
 
     return (
         <View style = {{ 
-                ...styles.conOuter,  backgroundColor: theme.header
+                ...styles.conOuter,  backgroundColor: theme.header, borderColor: theme.borders
             }}
         >
 
@@ -41,6 +41,7 @@ const styles = StyleSheet.create(
             alignItems: "center",
             justifyContent: "space-between",
             width: "100%",
+            borderWidth: 1,
             marginBottom: Math.floor(utilsGlobalStyles.spacingVertN(-1)),
         },
 

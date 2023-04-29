@@ -12,6 +12,20 @@ import PageContainer from '../components/PageContainer.js';
 import Header from '../components/Header.js';
 import Container from '../components/Container.js';
 
+// An object that specifies the options for the 'pop-up' messages that may be displayed.
+const popUpMsgs = 
+{
+    numBalls: 
+    {
+        title: "No balls selected!",
+        message: "You must select the number of balls per player to continue.",
+        buttons: [
+            { text: "OK" }
+        ]
+    }
+}
+
+
 function GameParameters({ navigation }) 
 {
     const [numPlayers, setNumPlayers] = useState(2);
@@ -19,6 +33,8 @@ function GameParameters({ navigation })
     const [numBalls, setNumBalls] = useState(0);
 
     const [showCounts, setShowCounts] = useState(true);
+
+    const [namePopUpMsg, setNamePopUpMsg] = useState("");
 
     const selectNumPlayers = (aNum) =>
     {
@@ -44,7 +60,8 @@ function GameParameters({ navigation })
     {
         if (numPlayers <= 0 || numBalls <= 0)
         {
-            Alert.alert("No balls selected!", "You must select the number of balls per player to continue.", undefined, { cancelable: true });
+            setNamePopUpMsg("numBalls");
+            //Alert.alert("No balls selected!", "You must select the number of balls per player to continue.", undefined, { cancelable: true });
             return;
         }
 
@@ -58,12 +75,10 @@ function GameParameters({ navigation })
         */
         if (lGoToPrevNamesPages)
         {
-            console.log("Go to prev players page!");
             navigation.navigate("prevNames", { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts });
         }
         else
         {
-            console.log("Go to players page!");
             navigation.navigate("playerNames", { numPlayers: numPlayers, numBalls: numBalls, showCounts: showCounts });
         }
     };
@@ -96,6 +111,10 @@ function GameParameters({ navigation })
             buttonNavBarHandler = { handleNext }
             headerButtonLeft = { Header.buttonNames.back }
             headerButtonRight = { Header.buttonNames.settings }
+            optionsPopUpMsg = {
+                Object.keys(popUpMsgs).includes(namePopUpMsg) ? 
+                    { ...popUpMsgs[namePopUpMsg], removePopUp: () => setNamePopUpMsg("") } : undefined
+            }
         >
 
             <Container style = {{ ...styles.containerBalls }}>

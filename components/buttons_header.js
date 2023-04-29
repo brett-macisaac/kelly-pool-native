@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-
-import globalProps from '../styles';
-import ButtonStandard from './ButtonStandard';
-
 import { useContext } from "react";
 import { Alert } from 'react-native';
 import ThemeContext from "../contexts/ThemeContext.js";
+
+import globalProps from '../styles';
+import ButtonStandard from './ButtonStandard';
+import PopUpStandard from './PopUpStandard.js';
 
 /*
 * These are the button components available to be placed in the Header component.
@@ -46,29 +46,49 @@ const buttons =
     * Props:
         > navigation: the app's navigation object.
     */
-    menu: ({ navigation }) =>
+    menu: ({ navigation, setOptionsPopUpMsg }) =>
     {
         const { themeName } = useContext(ThemeContext);
         let theme = globalProps.themes[themeName];
 
         const handleAlert = () =>
         {
-            Alert.alert(
-                'Return to Menu',
-                "Are you sure? You will lose your game's progress.",
-                [
-                    {
-                        text: "Cancel",
-                        style: "cancel"
-                    },
-                    {
-                        text: "Return",
-                        onPress: () => navigation.navigate("gameParameters"),
-                        style: "default"
-                    }
-                ],
-                { cancelable: true }
+            setOptionsPopUpMsg(
+                {
+                    title: 'Return to Menu',
+                    message: "Are you sure? You will lose your game's progress.",
+                    buttons: [
+                        {
+                            text: "Cancel",
+                        },
+                        {
+                            text: "Return",
+                            onPress: () => {
+                                //setOptionsPopUpMsg(undefined);
+                                navigation.navigate("gameParameters")
+                            },
+                        }
+                    ],
+                    removePopUp: () => setOptionsPopUpMsg(undefined)
+                }
             );
+
+            // Alert.alert(
+            //     'Return to Menu',
+            //     "Are you sure? You will lose your game's progress.",
+            //     [
+            //         {
+            //             text: "Cancel",
+            //             style: "cancel"
+            //         },
+            //         {
+            //             text: "Return",
+            //             onPress: () => navigation.navigate("gameParameters"),
+            //             style: "default"
+            //         }
+            //     ],
+            //     { cancelable: true }
+            // );
         }
 
         return (

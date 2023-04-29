@@ -13,6 +13,7 @@ import GridPoolBall from '../components/GridPoolBall.js';
 import GameButton from '../components/GameButton.js';
 import Header from '../components/Header.js';
 import Container from '../components/Container.js';
+import { PopUpOk } from '../components/PopUpStandard.js'
 
 function Game({ navigation, route }) 
 {
@@ -50,6 +51,8 @@ function Game({ navigation, route })
 
     const [indexSelected, setIndexSelected] = useState(-1);
 
+    const [optionsPopUpMsg, setOptionsPopUpMsg] = useState(undefined);
+
     const NumPlayersIn = () =>
     {
         return players.filter(
@@ -62,9 +65,15 @@ function Game({ navigation, route })
         ).length;
     }
 
-    const EliminatePlayer = (aIndex) =>
+    const EliminatePlayer = (aIndex, nameWinner) =>
     {
-        Alert.alert("Player Eliminated", `${players[aIndex].name} has been eliminated`, undefined, { cancelable: true });
+        setOptionsPopUpMsg(
+            PopUpOk("Player Eliminated", `${players[aIndex].name} has been eliminated.`, 
+                    nameWinner ? () => setOptionsPopUpMsg(PopUpOk("Winner!", `${nameWinner} has won the game!`)) 
+                               : undefined
+            )
+        );
+        //Alert.alert("Player Eliminated", `${players[aIndex].name} has been eliminated`, undefined, { cancelable: true });
 
         if (aIndex === indexSelected)
         {
@@ -98,10 +107,6 @@ function Game({ navigation, route })
                 else if (aPlayers[i].nthPlace < aPlayers[aIndex].nthPlace)
                 {
                     aPlayers[i].nthPlace += 1;
-                }
-                else
-                {
-                    console.log(`${aPlayers[i].nthPlace} < ${aPlayers[aIndex].nthPlace}`)
                 }
             }
         }
@@ -233,7 +238,8 @@ function Game({ navigation, route })
                             const lNumPlayers = NumPlayersIn();
 
                             lDeepCopy[i].nthPlace = lNumPlayers;
-                            EliminatePlayer(i);
+
+                            let nameWinner = "";
 
                             // If the player who just lost placed 2nd, that means there's only one player left.
                             if (lNumPlayers === 2)
@@ -247,13 +253,18 @@ function Game({ navigation, route })
                                         continue;
 
                                     player.nthPlace = 1;
+
+                                    nameWinner = player.name;
+
                                     break;
                                 }
                             }
+
+                            EliminatePlayer(i, nameWinner);
                         }
                         else if (route.params.showCounts && lBallPotted)
                         {
-                            Alert.alert("Lost Ball", `${lDeepCopy[i].name} has lost a ball`, undefined, { cancelable: true });
+                            setOptionsPopUpMsg(PopUpOk("Lost Ball", `${ lDeepCopy[i].name} has lost a ball.`));
                         }
 
                         // If the player returned to the game by 'resurrecting' one of their potted balls.
@@ -315,9 +326,6 @@ function Game({ navigation, route })
                     lDeepCopy[i].selected = false;
                 }
 
-                // console.log("Deselected Balls:");
-                // console.log(lBallNumsDeselected);
-
                 const lPlayer = players[aIndex];
 
                 for (let i = 0; i < lPlayer.balls.length; ++i)
@@ -375,9 +383,6 @@ function Game({ navigation, route })
 
         // Balls that haven't been potted and are not assigned to a player.
         const lBallsAvailable = availableBalls();
-
-        // console.log("Available balls: ");
-        // console.log(lBallsAvailable);
 
         if (lBallsAvailable.length === 0)
             return;
@@ -542,6 +547,9 @@ function Game({ navigation, route })
             navigation = { navigation }
             headerButtonRight = { Header.buttonNames.settings }
             headerButtonLeft = { Header.buttonNames.menu }
+            optionsPopUpMsg = { 
+                optionsPopUpMsg ? { ...optionsPopUpMsg, removePopUp: () => setOptionsPopUpMsg(undefined) } : undefined 
+            }
         >
             <Container>
 

@@ -1,4 +1,4 @@
-import { View, ScrollView, Keyboard, StyleSheet } from 'react-native';
+import { View, ScrollView, Keyboard, StyleSheet, Modal } from 'react-native';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useContext } from 'react';
 
@@ -6,6 +6,7 @@ import globalProps, { utilsGlobalStyles } from "../styles.js";
 import ThemeContext from "../contexts/ThemeContext.js";
 import Header from './Header.js';
 import NavBar from './NavBar.js';
+import PopUpStandard from './PopUpStandard.js';
 
 /* 
 * This is the parent component of every page, meaning that it should wrap every page of the application.
@@ -24,17 +25,19 @@ import NavBar from './NavBar.js';
     > style: an optional styling object for the container of the content.
 */
 function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHandler, headerButtonLeft,
-                         headerButtonRight, style })
+                         headerButtonRight, optionsPopUpMsg, style })
 {
     // Acquire global theme.
     const { themeName } = useContext(ThemeContext);
     let theme = globalProps.themes[themeName];
 
+    const [ stOptionsPopUpMsg, setOptionsPopUpMsg ] = useState(undefined);
+
     // Whether the (onscreen) keyboard is displayed.
-    const [ isKeyboardActive, setIsKeyboardActive ] = useState(false);
+    const [ stIsKeyboardActive, setIsKeyboardActive ] = useState(false);
 
     /*
-    * Setup the event listeners that are responsible for setting isKeyboardActive.
+    * Setup the event listeners that are responsible for setting stIsKeyboardActive.
     */
     useEffect(
         () => 
@@ -64,13 +67,26 @@ function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHan
         []
     );
 
+    useEffect(
+        () =>
+        {
+            setOptionsPopUpMsg(optionsPopUpMsg);
+        },
+        [ optionsPopUpMsg ]
+    )
+
     return ( 
         <View style = {{ flex: 1, backgroundColor: theme.content }}>
+
+            {
+                (stOptionsPopUpMsg) && <PopUpStandard { ...stOptionsPopUpMsg } />
+            }
 
             <Header 
                 navigation = { navigation }
                 nameBtnLeft = { headerButtonLeft }
                 nameBtnRight = { headerButtonRight }
+                setOptionsPopUpMsg = { (options) => setOptionsPopUpMsg(options) }
             />
 
             <ScrollView 
@@ -82,7 +98,7 @@ function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHan
             </ScrollView>
 
             {
-                ((buttonNavBarText && buttonNavBarHandler) && !isKeyboardActive) && (
+                ((buttonNavBarText && buttonNavBarHandler) && !stIsKeyboardActive) && (
                     <NavBar
                         text = { buttonNavBarText }
                         onPress = { buttonNavBarHandler }
@@ -102,6 +118,7 @@ PageContainer.propTypes =
     buttonNavBarHandler: PropTypes.func,
     headerButtonLeft: PropTypes.string,
     headerButtonRight: PropTypes.string,
+    optionsPopUpMsg: PropTypes.object,
     style: PropTypes.object,
 };
 
@@ -113,6 +130,7 @@ PageContainer.defaultProps =
     buttonNavBarHandler: undefined,
     headerButtonLeft: "none",
     headerButtonRight: "none",
+    optionsPopUpMsg: undefined,
     style: {}
 }
 

@@ -9,6 +9,7 @@ import PageContainer from '../components/PageContainer.js';
 import Header from '../components/Header.js';
 import utils from '../utils/utils.js';
 import consts from '../utils/constants.js';
+import { PopUpOk } from '../components/PopUpStandard.js'
 
 function PlayerNames({ navigation, route }) 
 {
@@ -21,6 +22,8 @@ function PlayerNames({ navigation, route })
                 Array(route.params.numPlayers).fill("")
 
     );
+
+    const [optionsPopUpMsg, setOptionsPopUpMsg] = useState(undefined);
 
     const handleTextInput = (aNewText, aIndex) =>
     {
@@ -51,7 +54,8 @@ function PlayerNames({ navigation, route })
 
         if (!lAreNamesSet)
         {
-            Alert.alert("Not enough names!", "You must give each player a name before you can start.", undefined, { cancelable: true });
+            setOptionsPopUpMsg(PopUpOk("Not enough names!", "You must give each player a name before you can start."));
+            //Alert.alert("Not enough names!", "You must give each player a name before you can start.", undefined, { cancelable: true });
             return;
         }
 
@@ -102,6 +106,9 @@ function PlayerNames({ navigation, route })
             buttonNavBarHandler = { handleStart }
             headerButtonLeft = { Header.buttonNames.back }
             headerButtonRight = { Header.buttonNames.settings }
+            optionsPopUpMsg = { 
+                optionsPopUpMsg ? { ...optionsPopUpMsg, removePopUp: () => setOptionsPopUpMsg(undefined) } : undefined 
+            }
             style = {{ justifyContent: "center" }}
         >
             {

@@ -63,13 +63,10 @@ async function GetFromAsyncStorage(aKey, aAlt = "")
     {
         const lData = await AsyncStorage.getItem(aKey);
 
-        console.log("Data from internal storage: " + lData)
-
         return lData ? JSON.parse(lData) : aAlt;
     } 
     catch (error) 
     {
-        console.log("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         console.log(error);
         return "";
     }
