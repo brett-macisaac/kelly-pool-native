@@ -9,22 +9,8 @@ import GridPoolBall from '../components/GridPoolBall.js';
 import CountLabel from '../components/CountLabel.js';
 import CheckBox from '../components/CheckBox.js';
 import PageContainer from '../components/PageContainer.js';
-import Header from '../components/Header.js';
 import Container from '../components/Container.js';
-
-// An object that specifies the options for the 'pop-up' messages that may be displayed.
-const popUpMsgs = 
-{
-    numBalls: 
-    {
-        title: "No balls selected!",
-        message: "You must select the number of balls per player to continue.",
-        buttons: [
-            { text: "OK" }
-        ]
-    }
-}
-
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 function GameParameters({ navigation }) 
 {
@@ -34,7 +20,7 @@ function GameParameters({ navigation })
 
     const [showCounts, setShowCounts] = useState(true);
 
-    const [namePopUpMsg, setNamePopUpMsg] = useState("");
+    const [optionsPopUpMsg, setOptionsPopUpMsg] = useState(undefined);
 
     const selectNumPlayers = (aNum) =>
     {
@@ -60,7 +46,15 @@ function GameParameters({ navigation })
     {
         if (numPlayers <= 0 || numBalls <= 0)
         {
-            setNamePopUpMsg("numBalls");
+            setOptionsPopUpMsg(
+                {
+                    title: "No balls selected!",
+                    message: "You must select the number of balls per player to continue.",
+                    buttons: [
+                        { text: "OK" }
+                    ]
+                }
+            );
             //Alert.alert("No balls selected!", "You must select the number of balls per player to continue.", undefined, { cancelable: true });
             return;
         }
@@ -109,12 +103,9 @@ function GameParameters({ navigation })
             navigation = { navigation }
             buttonNavBarText = "Next"
             buttonNavBarHandler = { handleNext }
-            headerButtonLeft = { Header.buttonNames.back }
-            headerButtonRight = { Header.buttonNames.settings }
-            optionsPopUpMsg = {
-                Object.keys(popUpMsgs).includes(namePopUpMsg) ? 
-                    { ...popUpMsgs[namePopUpMsg], removePopUp: () => setNamePopUpMsg("") } : undefined
-            }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
+            optionsPopUpMsg = { optionsPopUpMsg }
         >
 
             <Container style = {{ ...styles.containerBalls }}>

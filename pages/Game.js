@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import ThemeContext from "../contexts/ThemeContext.js";
 import globalProps, { styles as globalStyles, utilsGlobalStyles } from "../styles.js";
@@ -11,9 +12,9 @@ import CountLabel from '../components/CountLabel.js';
 import PlayerLabel from '../components/PlayerLabel.js';
 import GridPoolBall from '../components/GridPoolBall.js';
 import GameButton from '../components/GameButton.js';
-import Header from '../components/Header.js';
 import Container from '../components/Container.js';
 import { PopUpOk } from '../components/PopUpStandard.js'
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 function Game({ navigation, route }) 
 {
@@ -545,11 +546,9 @@ function Game({ navigation, route })
     return ( 
         <PageContainer
             navigation = { navigation }
-            headerButtonRight = { Header.buttonNames.settings }
-            headerButtonLeft = { Header.buttonNames.menu }
-            optionsPopUpMsg = { 
-                optionsPopUpMsg ? { ...optionsPopUpMsg, removePopUp: () => setOptionsPopUpMsg(undefined) } : undefined 
-            }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtonMenu ] }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
+            optionsPopUpMsg = { optionsPopUpMsg }
         >
             <Container>
 
@@ -647,5 +646,40 @@ const styles = StyleSheet.create(
     {
     }
 );
+
+// An object that defines the 'menu' header button.
+const optionsHeaderButtonMenu = 
+{
+    icon: (size, colour) =>
+    {
+        return (
+            <Ionicons 
+                name = "home" color = { colour }  
+                size = { size } 
+            />
+        )
+    },
+    onPress: (navigation, setOptionsPopUpMsg) =>
+    {
+        setOptionsPopUpMsg(
+            {
+                title: 'Return to Menu',
+                message: "Are you sure? You will lose your game's progress.",
+                buttons: [
+                    {
+                        text: "Cancel",
+                    },
+                    {
+                        text: "Return",
+                        onPress: () => {
+                            navigation.navigate("gameParameters")
+                        },
+                    }
+                ],
+                removePopUp: () => setOptionsPopUpMsg(undefined)
+            }
+        );
+    }
+}
 
 export default Game;

@@ -2,13 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, ScrollView } from 'react-native';
 
 import globalProps, { utilsGlobalStyles } from '../styles';
-import consts from '../utils/constants.js';
-import utils from '../utils/utils.js';
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 import Container from '../components/Container';
 import TextStandard from '../components/TextStandard';
 import PageContainer from '../components/PageContainer.js';
-import Header from '../components/Header.js';
 import ThemeContext from '../contexts/ThemeContext';
 
 function GameInfo({ navigation }) 
@@ -20,8 +18,8 @@ function GameInfo({ navigation })
     return ( 
         <PageContainer
             navigation = { navigation }
-            headerButtonLeft = { Header.buttonNames.back }
-            headerButtonRight = { Header.buttonNames.settings }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
             style = {{ paddingHorizontal: 15 }}
         >
 

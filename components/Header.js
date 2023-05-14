@@ -5,7 +5,20 @@ import { useContext } from "react";
 import ThemeContext from "../contexts/ThemeContext.js";
 import globalProps from '../styles';
 import TextStandard from './TextStandard';
-import buttonsHeader from "./buttons_header";
+import buttonsHeader from "./options_header_buttons";
+import HeaderButton from "./HeaderButton.js";
+
+/*
+headerLeft: 
+{
+    icon: (size, colour) =>
+    {
+        return <Ionicons name = "home" color = { colour }  size = { size } />
+    },
+    onPress: (setOptionsPopUpMsg) => 
+
+}
+*/
 
 /*
 * The custom header component that's used by the PageContainer component.
@@ -14,16 +27,17 @@ import buttonsHeader from "./buttons_header";
     > navigation: the object that allows for navigation to pages in the app.
     > nameBtnLeft: the name of the left button, which refers directly to a component from buttonsHeader.
     > nameBtnRight: the name of the right button, which refers directly to a component from buttonsHeader.
+    > optionsLeftButtons: an array of options for each of the header buttons placed on the left. Each element is an 
+      object that has three properties: icon, onPress, and left. The icon is a function that takes a parameter list of 
+      (size, colour) and returns a vector icon (such as from Ionicons) that uses the size and colour arguments for its 
+      corresponding props. The onPress prop is a function that's called when the icon is clicked.
+    > optionsRightButtons: same as optionsLeftButtons but for the buttons on the right.
 */
-const Header = ({ navigation, nameBtnLeft, nameBtnRight, setOptionsPopUpMsg }) => 
+const Header = ({ navigation, optionsLeftButtons, optionsRightButtons, setOptionsPopUpMsg }) => 
 {
     // Acquire global theme.
     const { themeName } = useContext(ThemeContext);
     let theme = globalProps.themes[themeName];
-
-    // The left and right buttons.
-    const BtnLeft = buttonsHeader[nameBtnLeft];
-    const BtnRight = buttonsHeader[nameBtnRight];
   
     return (
         <View 
@@ -32,18 +46,26 @@ const Header = ({ navigation, nameBtnLeft, nameBtnRight, setOptionsPopUpMsg }) =
             }}
         >
 
-            <View style = { { ...styles.innerContainer, ...styles.leftContainer } }>
-                { 
-                    BtnLeft && (
-                        <BtnLeft 
-                            navigation = { navigation }
-                            setOptionsPopUpMsg = { setOptionsPopUpMsg }
-                        />
+            <View style = { { ...styles.sideContainer, ...styles.leftContainer } }>
+                {
+                    optionsLeftButtons && optionsLeftButtons.map(
+                        (options, index) =>
+                        {
+                            return (
+                                <HeaderButton 
+                                    key = { index }
+                                    icon = { options.icon }
+                                    onPress = { 
+                                        () => { options.onPress(navigation, setOptionsPopUpMsg) } 
+                                    }
+                                />
+                            )
+                        }
                     )
                 }
             </View>
 
-            <View style = { { ...styles.innerContainer, ...styles.middleContainer } }>
+            <View>
                 <Image 
                     style = {{ 
                         height: 45, width: 45, borderRadius: 45 / 2, 
@@ -53,42 +75,53 @@ const Header = ({ navigation, nameBtnLeft, nameBtnRight, setOptionsPopUpMsg }) =
                 />
             </View>
 
-            <View style = { { ...styles.innerContainer, ...styles.rightContainer } }>
-                { 
-                    BtnRight && (
-                        <BtnRight
-                            navigation = { navigation } 
-                            setOptionsPopUpMsg = { setOptionsPopUpMsg }
-                        />
-                    )
-                }
+            <View style = { { ...styles.sideContainer, ...styles.rightContainer } }>
+            {
+                optionsRightButtons && optionsRightButtons.map(
+                    (options, index) =>
+                    {
+                        return (
+                            <HeaderButton 
+                                key = { index }
+                                icon = { options.icon }
+                                onPress = { 
+                                    () => { options.onPress(navigation, setOptionsPopUpMsg) } 
+                                }
+                            />
+                        )
+                    }
+                )
+            }
             </View>
 
         </View>
     );
 };
 
-// An 'enum' for the available buttons.
-Header.buttonNames =  
-{
-    none: "none", // i.e. no button.
-    back: "back",
-    menu: "menu",
-    settings: "settings",
-}
-
 Header.propTypes =
 {
     navigation: PropTypes.object.isRequired,
-    nameBtnLeft: PropTypes.oneOf(Object.keys(Header.buttonNames)),
-    nameBtnRight: PropTypes.oneOf(Object.keys(Header.buttonNames)),
+    optionsLeftButtons: PropTypes.arrayOf(
+        PropTypes.shape(
+            {
+                icon: PropTypes.func.isRequired,
+                onPress: PropTypes.func.isRequired
+            }
+        )
+    ),
+    optionsRightButtons: PropTypes.arrayOf(
+        PropTypes.shape(
+            {
+                icon: PropTypes.func.isRequired,
+                onPress: PropTypes.func.isRequired
+            }
+        )
+    ),
     setOptionsPopUpMsg: PropTypes.func
 };
 
 Header.defaultProps =
 {
-    nameBtnLeft: Header.buttonNames.none,
-    nameBtnRight: Header.buttonNames.none
 }
 
 const styles = StyleSheet.create(
@@ -100,22 +133,19 @@ const styles = StyleSheet.create(
             height: globalProps.heightHeader,
             borderBottomWidth: 1,
         },
-        innerContainer: 
+        sideContainer: 
         {
-            width: "33%",
+            width: 1,
             flexGrow: 1,
+            flexDirection: "row"
         },
         leftContainer:
         {
-            alignItems: "flex-start"
-        },
-        middleContainer:
-        {
-            alignItems: "center"
+            justifyContent: "flex-start",
         },
         rightContainer:
         {
-            alignItems: "flex-end"
+            justifyContent: "flex-end",
         }
     }
 );

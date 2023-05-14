@@ -6,10 +6,10 @@ import globalProps, { utilsGlobalStyles } from "../styles.js";
 import TextInputStandard from "../components/TextInputStandard";
 import TextStandard from '../components/TextStandard.js';
 import PageContainer from '../components/PageContainer.js';
-import Header from '../components/Header.js';
 import utils from '../utils/utils.js';
 import consts from '../utils/constants.js';
 import { PopUpOk } from '../components/PopUpStandard.js'
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 function PlayerNames({ navigation, route }) 
 {
@@ -104,11 +104,9 @@ function PlayerNames({ navigation, route })
             navigation = { navigation }
             buttonNavBarText = "Start"
             buttonNavBarHandler = { handleStart }
-            headerButtonLeft = { Header.buttonNames.back }
-            headerButtonRight = { Header.buttonNames.settings }
-            optionsPopUpMsg = { 
-                optionsPopUpMsg ? { ...optionsPopUpMsg, removePopUp: () => setOptionsPopUpMsg(undefined) } : undefined 
-            }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
+            optionsPopUpMsg = { optionsPopUpMsg }
             style = {{ justifyContent: "center" }}
         >
             {

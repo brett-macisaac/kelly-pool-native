@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 
 import globalProps, { utilsGlobalStyles } from '../styles';
 import { useContext } from "react";
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 import ThemeContext from "../contexts/ThemeContext.js";
 import TextStandard from '../components/TextStandard.js';
@@ -18,7 +19,7 @@ function SettingsThemes({ navigation })
     return ( 
         <PageContainer
             navigation = { navigation }
-            headerButtonLeft = { Header.buttonNames.back }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
             style = {{ paddingHorizontal: 15 }}
         >
 

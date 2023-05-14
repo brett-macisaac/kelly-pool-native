@@ -14,9 +14,9 @@ import ThemeContext from "../contexts/ThemeContext.js";
 * Props:
     > children: any children components.
     > navigation: the navigation object.
-    > headerButtonLeft: the name of the button to be displayed on the left portion of the header. This should correspond
+    > nameHeaderLeft: the name of the button to be displayed on the left portion of the header. This should correspond
       to a value of Header.buttonNames.
-    > headerButtonRight: the name of the button to be displayed on the right portion of the header. This should 
+    > nameHeaderRight: the name of the button to be displayed on the right portion of the header. This should 
       correspond to a value of Header.buttonNames.
     > style: an optional styling object for the container of the content.
 */

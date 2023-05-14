@@ -18,14 +18,16 @@ import PopUpStandard from './PopUpStandard.js';
 * Props:
     > children: any children components.
     > navigation: the navigation object.
-    > headerButtonLeft: the name of the button to be displayed on the left portion of the header. This should correspond
-      to a value of Header.buttonNames.
-    > headerButtonRight: the name of the button to be displayed on the right portion of the header. This should 
-      correspond to a value of Header.buttonNames.
+    > buttonNavBarText: the text of the NavBar button.
+    > buttonNavBarHandler: the onPress function of the NavBar button.
+    > optionsLeftHeaderButtons: this prop is passed as the optionsLeftButtons of the page's Header component.
+    > optionsRightHeaderButtons: this prop is passed as the optionsRightButtons of the page's Header component.
+    > optionsPopUpMsg: an object which defines the content of the pop-up message. If undefined/falsy (which it is by 
+      default), a pop-up message isn't displayed
     > style: an optional styling object for the container of the content.
 */
-function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHandler, headerButtonLeft,
-                         headerButtonRight, optionsPopUpMsg, style })
+function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHandler, optionsLeftHeaderButtons, 
+                         optionsRightHeaderButtons, optionsPopUpMsg, style })
 {
     // Acquire global theme.
     const { themeName } = useContext(ThemeContext);
@@ -70,7 +72,10 @@ function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHan
     useEffect(
         () =>
         {
-            setOptionsPopUpMsg(optionsPopUpMsg);
+            if (!optionsPopUpMsg)
+                setOptionsPopUpMsg(undefined);
+            else
+                setOptionsPopUpMsg({ ...optionsPopUpMsg, removePopUp: () => setOptionsPopUpMsg(undefined) });
         },
         [ optionsPopUpMsg ]
     )
@@ -84,9 +89,9 @@ function PageContainer({ children, navigation, buttonNavBarText, buttonNavBarHan
 
             <Header 
                 navigation = { navigation }
-                nameBtnLeft = { headerButtonLeft }
-                nameBtnRight = { headerButtonRight }
-                setOptionsPopUpMsg = { (options) => setOptionsPopUpMsg(options) }
+                optionsLeftButtons = { optionsLeftHeaderButtons }
+                optionsRightButtons = { optionsRightHeaderButtons }
+                setOptionsPopUpMsg = { setOptionsPopUpMsg }
             />
 
             <ScrollView 
@@ -116,8 +121,8 @@ PageContainer.propTypes =
     navigation: PropTypes.object.isRequired,
     buttonNavBarText: PropTypes.string,
     buttonNavBarHandler: PropTypes.func,
-    headerButtonLeft: PropTypes.string,
-    headerButtonRight: PropTypes.string,
+    nameHeaderLeft: PropTypes.string,
+    nameHeaderRight: PropTypes.string,
     optionsPopUpMsg: PropTypes.object,
     style: PropTypes.object,
 };
@@ -128,8 +133,8 @@ PageContainer.defaultProps =
     showNavBar: true,
     buttonNavBarText: "",
     buttonNavBarHandler: undefined,
-    headerButtonLeft: "none",
-    headerButtonRight: "none",
+    nameHeaderLeft: "",
+    nameHeaderRight: "",
     optionsPopUpMsg: undefined,
     style: {}
 }

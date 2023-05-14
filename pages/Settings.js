@@ -6,14 +6,13 @@ import globalProps, { utilsGlobalStyles } from '../styles';
 import consts from '../utils/constants.js';
 import utils from '../utils/utils.js';
 import { useContext } from "react";
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 import ThemeContext from "../contexts/ThemeContext.js";
 import ButtonStandard from '../components/ButtonStandard.js';
 import ButtonNextPage from '../components/ButtonNextPage';
 import TextStandard from '../components/TextStandard.js';
 import PageContainer from '../components/PageContainer.js';
-import Header from '../components/Header.js';
-import ButtonTheme from '../components/ButtonTheme';
 
 function Settings({ navigation }) 
 {
@@ -25,7 +24,7 @@ function Settings({ navigation })
     return ( 
         <PageContainer
             navigation = { navigation }
-            headerButtonLeft = { Header.buttonNames.back }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
             style = {{ paddingHorizontal: 15, paddingVertical: globalProps.spacingVertBase, alignItems: "center" }}
         >
 

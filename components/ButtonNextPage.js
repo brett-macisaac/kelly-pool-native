@@ -17,6 +17,7 @@ import globalProps, { utilsGlobalStyles } from '../styles';
     > sizeText: the size of the text. IMPORTANT: this is not fontSize, but rather the 'rank' of the fontSize (see 
                 styles_global.js for more info).
     > isBold: whether the text is bold.
+    > backgroundColorIcon: the backgroundColor of the icon.
     > onPress: the function that is called when the button is pressed.
     > style: the style of the component's container.
     > styleText: the style of the text within the container. The TextStandard component is used here, so refer to that

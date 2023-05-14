@@ -5,7 +5,7 @@ import globalProps, { utilsGlobalStyles } from "../styles.js";
 import utils from '../utils/utils.js';
 import consts from '../utils/constants.js';
 
-import Header from '../components/Header.js';
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 import PageContainer from '../components/PageContainer.js';
 import PrevPlayerLabel from '../components/PrevPlayerLabel.js';
 
@@ -130,8 +130,8 @@ function PrevNames({ navigation, route })
             navigation = { navigation }
             buttonNavBarText = { selectedNames.length === route.params.numPlayers ? "Start" : "Next" }
             buttonNavBarHandler = { handlePress }
-            headerButtonLeft = { Header.buttonNames.back }
-            headerButtonRight = { Header.buttonNames.settings }
+            optionsLeftHeaderButtons = { [ optionsHeaderButtons.back ] }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
             style = {{ justifyContent: "center" }}
         >
             {

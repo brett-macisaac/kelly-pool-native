@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Dimensions, StyleSheet } from 'react-native';
 
 import globalProps, { utilsGlobalStyles } from '../styles';
-import consts from '../utils/constants.js';
-import utils from '../utils/utils.js';
+import optionsHeaderButtons from '../components/options_header_buttons.js';
 
 import ButtonStandard from '../components/ButtonStandard.js';
 import PageContainer from '../components/PageContainer.js';
-import Header from '../components/Header.js';
 
 function Menu({ navigation }) 
 {
     return ( 
         <PageContainer
             navigation = { navigation }
-            headerButtonRight = { Header.buttonNames.settings }
+            optionsRightHeaderButtons = { [ optionsHeaderButtons.settings ] }
             style = {{ justifyContent: "center", alignItems: "center" }}
         >
 

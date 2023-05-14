@@ -8,25 +8,42 @@ import ThemeContext from "../contexts/ThemeContext.js";
 import globalProps, { utilsGlobalStyles } from '../styles';
 
 /*
-* A customisable button component which by default implements the app's global theme.
+* The app's pop-up message component.
 
 * Props:
-    > icon: a component such as a vector image from a library like MaterialCommunityIcons. For more icons, see the
-            following link: https://oblador.github.io/react-native-vector-icons/.
-    > text: the text that is displayed on the button.
-    > sizeText: the size of the text. IMPORTANT: this is not fontSize, but rather the 'rank' of the fontSize (see 
-                styles_global.js for more info).
-    > isBold: whether the text is bold.
-    > onPress: the function that is called when the button is pressed.
-    > style: the style of the component's container.
-    > styleText: the style of the text within the container. The TextStandard component is used here, so refer to that
-                 component's code for information regarding how styling is applied.
+    > title: the pop-up's title.
+    > message: the pop-up's message.
+    > buttons: the pop-up's buttons. This should be an array of objects. Each object should have two properties: text
+      (string) and onPress (function). The button's 'text' is required, but 'onPress' is not. If there's only one 
+      button, the pop-up is automatically dismissable (regardless of the value of 'dismissable') and said button's 
+      onPress function gets called when the pop-up is dismissed.
+    > removePopUp: the function that contains the logic to remove the pop-up.
+    > dismissable: a boolean that, when true, indicates that the pop-up can be dismissed by clicking off it. This should
+      be false if you want the user to click one of the buttons.
 */
-function PopUpStandard({ title, message, buttons, removePopUp })
+function PopUpStandard({ title, message, buttons, removePopUp, dismissable })
 {
     // Acquire global theme.
     const { themeName } = useContext(ThemeContext);
     let theme = globalProps.themes[themeName];
+
+    // The onPress prop of the container.
+    let onPressContainer = undefined;
+
+    if (buttons.length === 1)
+    {
+        onPressContainer = () => 
+        { 
+            removePopUp();
+
+            if (buttons[0].onPress) 
+                buttons[0].onPress(); 
+        }
+    }
+    else if (dismissable)
+    {
+        onPressContainer = removePopUp;
+    }
 
     return (
         <Modal
@@ -36,7 +53,7 @@ function PopUpStandard({ title, message, buttons, removePopUp })
         >
 
             <TouchableOpacity
-                onPress = { removePopUp }
+                onPress = { onPressContainer }
                 style = {{ 
                     backgroundColor: theme.header + "99",
                     ...styles.container,
@@ -104,13 +121,15 @@ PopUpStandard.propTypes =
             }
         )
     ),
-    removePopUp: PropTypes.func.isRequired
+    removePopUp: PropTypes.func.isRequired,
+    dismissable: PropTypes.bool
 };
 
 PopUpStandard.defaultProps =
 {
     title: "",
     message: "",
+    dismissable: true
 }
 
 const styles = StyleSheet.create(
@@ -138,14 +157,15 @@ const styles = StyleSheet.create(
     }
 );
 
-function PopUpOk(title, message, onPress)
+function PopUpOk(title, message, onPress, dismissable)
 {
     return {
         title: title,
         message: message,
         buttons: [
             { text: "OK", onPress: onPress }
-        ]
+        ],
+        dismissable: dismissable
     }
 }
 
