@@ -130,7 +130,7 @@ they've been assigned.`
                     text = {
 `The app automatically assigns balls randomly to players. During the game, if you click on your name, this will 
 highlight both your name and your balls; click on your name again to hide your balls. Be sure not to 'accidentally' look 
-at other player's balls!`
+at other player's balls, or leave yours open for others' to see!`
                     }
                     style = {{ marginTop: utilsGlobalStyles.spacingVertN(-3) }}
                     removeLineBreaks
@@ -178,9 +178,9 @@ at other player's balls!`
                 <TextStandard 
                     text = {
 `The first player begins by 'breaking', as with a standard pool game. Each player has their turn in the order displayed 
-on the screen. A player's turn ends when they have a shot that fails to pot a ball. When a ball is potted, click the 
-corresponding ball on the screen. Once a player loses all of their balls, they are out of the game. The winner is the 
-last remaining player.`
+on the screen. A player's turn ends when they have a shot that fails to pot a ball, just as with normal pool. When a 
+ball is potted, double-click the corresponding ball on the screen. Once a player loses all of their balls, they are out 
+of the game. The winner is the last remaining player.`
                     }
                     removeLineBreaks
                 />

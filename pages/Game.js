@@ -618,6 +618,7 @@ function Game({ navigation, route })
                     clickBall = { clickBall }
                     balls = { balls }
                     width = { globalProps.widthGridPoolBall }
+                    doubleClick
                 />
 
                 {
